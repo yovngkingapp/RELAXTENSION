@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin — Registros</title>
+  <style>
+    :root{--bg:#0f1115;--card:#171a21;--fg:#e6e8ee;--muted:#8a93a6;--accent:#4f8cff;--border:#262b36}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 system-ui,sans-serif;padding:24px}
+    .wrap{max-width:1100px;margin:0 auto}
+    h1{font-size:20px;margin:0 0 16px}
+    .bar{display:flex;gap:8px;margin-bottom:16px}
+    input,button{padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:#0e1116;color:var(--fg);font:inherit}
+    input{flex:1}
+    button{background:var(--accent);border:0;font-weight:600;cursor:pointer;color:#fff}
+    button:disabled{opacity:.6}
+    table{width:100%;border-collapse:collapse;background:var(--card);border-radius:10px;overflow:hidden}
+    th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);font-size:13px}
+    th{background:#11141a;color:var(--muted);font-weight:600}
+    tr:last-child td{border-bottom:0}
+    a{color:var(--accent)}
+    #status{margin:12px 0;color:var(--muted)}
+    .err{color:#ff5c5c}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>📋 Registros</h1>
+  <div class="bar">
+    <input id="token" type="password" placeholder="Token de admin" />
+    <button id="load">Cargar</button>
+  </div>
+  <p id="status"></p>
+  <div id="table-wrap"></div>
+</div>
+
+<script>
+const ENDPOINT = 'https://script.google.com/macros/s/AKfycbxSo3hR_EQIs0mpDUMlWOPjDm4mAmu00UObuuoGLY2QQJjE1QmpqjPL9u0jahRxS8Z3/exec';
+const $ = s => document.querySelector(s);
+
+$('#token').value = sessionStorage.getItem('admin_token') || '';
+$('#load').addEventListener('click', cargar);
+
+async function cargar() {
+  const token = $('#token').value.trim();
+  if (!token) { $('#status').textContent = 'Poné el token'; return; }
+  sessionStorage.setItem('admin_token', token);
+
+  $('#load').disabled = true;
+  $('#status').textContent = 'Cargando…';
+  $('#status').className = '';
+  $('#table-wrap').innerHTML = '';
+
+  try {
+    const res = await fetch(ENDPOINT + '?token=' + encodeURIComponent(token));
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'Error');
+
+    if (!data.rows.length) {
+      $('#status').textContent = 'Sin registros todavía.';
+      return;
+    }
+
+    $('#status').textContent = data.rows.length + ' registro(s).';
+    renderTabla(data.headers, data.rows);
+  } catch (err) {
+    $('#status').textContent = '❌ ' + err.message;
+    $('#status').className = 'err';
+  } finally {
+    $('#load').disabled = false;
+  }
+}
+
+function renderTabla(headers, rows) {
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, c =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+  const thead = '<tr>' + headers.map(h => `<th>${esc(h)}</th>`).join('') + '</tr>';
+  const tbody = rows.map(r => '<tr>' + headers.map(h => {
+    const v = r[h] ?? '';
+    if (typeof v === 'string' && /^https?:\/\//.test(v))
+      return `<td><a href="${esc(v)}" target="_blank" rel="noopener">ver</a></td>`;
+    return `<td>${esc(v)}</td>`;
+  }).join('') + '</tr>').join('');
+
+  $('#table-wrap').innerHTML = `<table><thead>${thead}</thead><tbody>${tbody}</tbody></table>`;
+}
+</script>
+</body>
+</html>
