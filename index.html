@@ -3,38 +3,66 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Registro</title>
+  <title>Registro de Pensamientos</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main class="card">
-    <h1>Registro</h1>
-    <p class="sub">Completá y enviá. No hace falta cuenta.</p>
+    <h1>Registrá un pensamiento</h1>
+    <p class="sub">No hace falta cuenta. Tus datos quedan asociados a tu código.</p>
 
     <form id="form" autocomplete="off">
-      <!-- honeypot: invisible para humanos -->
-      <input type="text" name="_hp" tabindex="-1" autocomplete="off"
-             style="position:absolute;left:-9999px" aria-hidden="true">
+      <!-- Honeypot para bots -->
+      <input type="text" name="_hp" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
 
-      <label>Nombre
-        <input name="nombre" required maxlength="80">
+      <label>Código de usuario
+        <input name="codigo" required maxlength="20" placeholder="Ej: TEST-123" style="text-transform:uppercase">
       </label>
 
-      <label>Email <span class="opt">(opcional)</span>
-        <input name="email" type="email" maxlength="120">
+      <label>Situación
+        <textarea name="situacion" rows="2" maxlength="500" required placeholder="¿Qué estaba pasando?"></textarea>
       </label>
 
-      <label>Mensaje
-        <textarea name="mensaje" rows="4" maxlength="2000"></textarea>
+      <label>Pensamiento automático
+        <textarea name="pensamiento" rows="2" maxlength="500" required placeholder="¿Qué pasó por tu cabeza?"></textarea>
       </label>
 
-      <label>Archivo <span class="opt">(opcional, máx 20 MB)</span>
-        <input name="archivo" type="file">
+      <div class="grid2">
+        <label>Emoción (0-100)
+          <input name="emocion_inicial" type="number" min="0" max="100" required placeholder="0-100">
+        </label>
+        <label>Tipo de emoción
+          <input name="tipo_emocion" maxlength="30" placeholder="Ansiedad, tristeza...">
+        </label>
+      </div>
+
+      <label>Evidencias a favor
+        <textarea name="evidencia_favor" rows="2" maxlength="500" placeholder="¿Qué apoya ese pensamiento?"></textarea>
       </label>
 
-      <button type="submit">Enviar</button>
+      <label>Evidencias en contra
+        <textarea name="evidencia_contra" rows="2" maxlength="500" placeholder="¿Qué lo contradice o matiza?"></textarea>
+      </label>
+
+      <label>Pensamiento alternativo
+        <textarea name="pensamiento_alt" rows="2" maxlength="500" placeholder="Una mirada más equilibrada"></textarea>
+      </label>
+
+      <label>Emoción después (0-100)
+        <input name="emocion_final" type="number" min="0" max="100" placeholder="0-100">
+      </label>
+
+      <button type="submit">Analizar con IA</button>
       <p id="status" role="status"></p>
     </form>
+
+    <!-- Resultado del análisis en pantalla -->
+    <div id="resultado" class="resultado" hidden>
+      <h2>Análisis de tu registro</h2>
+      <p id="r-distorsiones" class="tag"></p>
+      <p id="r-analisis" class="analisis"></p>
+      <p class="sub" style="margin-top:15px"><a href="view.html" class="link">Ver mi historial completo →</a></p>
+    </div>
   </main>
   <script src="app.js"></script>
 </body>
