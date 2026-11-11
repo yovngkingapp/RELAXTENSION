@@ -1,1 +1,41 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Registro</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="card">
+    <h1>Registro</h1>
+    <p class="sub">Completá y enviá. No hace falta cuenta.</p>
 
+    <form id="form" autocomplete="off">
+      <!-- honeypot: invisible para humanos -->
+      <input type="text" name="_hp" tabindex="-1" autocomplete="off"
+             style="position:absolute;left:-9999px" aria-hidden="true">
+
+      <label>Nombre
+        <input name="nombre" required maxlength="80">
+      </label>
+
+      <label>Email <span class="opt">(opcional)</span>
+        <input name="email" type="email" maxlength="120">
+      </label>
+
+      <label>Mensaje
+        <textarea name="mensaje" rows="4" maxlength="2000"></textarea>
+      </label>
+
+      <label>Archivo <span class="opt">(opcional, máx 20 MB)</span>
+        <input name="archivo" type="file">
+      </label>
+
+      <button type="submit">Enviar</button>
+      <p id="status" role="status"></p>
+    </form>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
