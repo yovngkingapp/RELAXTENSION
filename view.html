@@ -7,21 +7,23 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="card wide">
-    <h1>Mi historial</h1>
-    <p class="sub">Poné tu código para ver tus registros y análisis pasados.</p>
+  <main class="card">
+    <header>
+      <h1>Tu recorrido</h1>
+      <p class="sub">Ingresá tu código para ver los pensamientos que trabajaste.</p>
+    </header>
 
     <form id="lookup" class="bar">
-      <input id="codigo" required maxlength="20" placeholder="Tu código (Ej: TEST-123)" style="text-transform:uppercase">
-      <button type="submit">Ver</button>
+      <input id="codigo" type="text" required maxlength="20" placeholder="Tu código (Ej: TEST-123)" style="text-transform:uppercase">
+      <button type="submit">Buscar</button>
     </form>
     
     <p id="status" role="status"></p>
     <div id="lista"></div>
 
-    <p class="sub" style="margin-top:20px">
+    <div style="text-align: center; margin-top: 30px;">
       <a href="index.html" class="link">← Registrar un pensamiento nuevo</a>
-    </p>
+    </div>
   </main>
 
   <script>
@@ -37,7 +39,7 @@
       if (!codigo) return;
       localStorage.setItem('last_code', codigo);
 
-      $('#status').textContent = 'Cargando...';
+      $('#status').textContent = 'Buscando...';
       $('#status').className = '';
       $('#lista').innerHTML = '';
 
@@ -53,10 +55,9 @@
         }
         
         $('#status').textContent = d.rows.length + ' registro(s) encontrado(s).';
-        // Los mostramos en orden inverso (el más nuevo arriba)
         $('#lista').innerHTML = d.rows.reverse().map(render).join('');
       } catch (err) {
-        $('#status').textContent = '❌ ' + err.message;
+        $('#status').textContent = '❌ Error al buscar. Revisá los permisos.';
         $('#status').className = 'err';
       }
     });
@@ -73,7 +74,7 @@
           <p><strong>Situación:</strong> ${esc(r.Situacion)}</p>
           <p><strong>Pensamiento:</strong> ${esc(r.Pensamiento)}</p>
           ${r.Distorsiones ? `<p class="tag">🔍 ${esc(r.Distorsiones)}</p>` : ''}
-          ${r.Analisis ? `<p class="analisis">${esc(r.Analisis)}</p>` : ''}
+          ${r.Analisis ? `<p class="analisis" style="background:#fff; padding:10px; border-radius:6px; margin-top:10px;">${esc(r.Analisis)}</p>` : ''}
         </article>`;
     }
   </script>
