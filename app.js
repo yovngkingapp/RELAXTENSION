@@ -5,15 +5,12 @@ const isLoggedIn = localStorage.getItem('is_logged_in');
 const currentUser = localStorage.getItem('last_code');
 
 if (isLoggedIn !== 'true' || !currentUser) {
-  // Si no hay sesión, a la calle
   window.location.href = 'login.html';
 }
 
-// Configurar la interfaz con el usuario
 document.getElementById('user-display').textContent = currentUser;
 document.getElementById('codigo-user').value = currentUser;
 
-// Botón de cerrar sesión
 document.getElementById('btn-logout').addEventListener('click', (e) => {
   e.preventDefault();
   localStorage.removeItem('is_logged_in');
@@ -23,11 +20,11 @@ document.getElementById('btn-logout').addEventListener('click', (e) => {
 // ═════════════════════════════════════════
 
 const form = document.querySelector('#form');
-const btn = form.querySelector('button[type=submit]');
+const btn = document.querySelector('#btn-submit');
 const msg = document.querySelector('#status');
 const resBox = document.querySelector('#resultado');
 
-// Actualizar sliders
+// Actualizar sliders visualmente
 const sliderInit = document.getElementById('emo-inicial');
 const valInit = document.getElementById('val-inicial');
 sliderInit.addEventListener('input', () => valInit.textContent = sliderInit.value);
@@ -38,15 +35,17 @@ sliderFinal.addEventListener('input', () => valFinal.textContent = sliderFinal.v
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
+  
+  // Estado de carga con Spinner
   btn.disabled = true; 
-  btn.textContent = 'Analizando...';
+  btn.innerHTML = '<span class="spinner"></span> Analizando...';
   msg.textContent = ''; 
   msg.className = '';
   resBox.hidden = true;
 
   const payload = {
     _hp: form._hp?.value || '',
-    codigo: currentUser, // Usamos el usuario logueado
+    codigo: currentUser,
     situacion: form.situacion.value.trim(),
     pensamiento: form.pensamiento.value.trim(),
     emocion_inicial: sliderInit.value,
@@ -65,25 +64,28 @@ form.addEventListener('submit', async (e) => {
     });
     
     const data = await res.json();
-    
     if (!data.ok) throw new Error(data.error || 'Error en el servidor');
 
-    document.querySelector('#r-distorsiones').textContent = data.distorsiones ? '🔍 ' + data.distorsiones : '';
+    // Mostrar resultados sin emojis
+    document.querySelector('#r-distorsiones').textContent = data.distorsiones ? 'Distorsiones: ' + data.distorsiones : '';
     document.querySelector('#r-analisis').textContent = data.analisis || '';
     resBox.hidden = false;
     
-    msg.textContent = '✅ Guardado.';
+    msg.textContent = 'Guardado correctamente.';
     msg.className = 'ok';
     
+    // Limpiar formulario
     form.situacion.value = form.pensamiento.value = '';
     form.evidencia_favor.value = form.evidencia_contra.value = form.pensamiento_alt.value = '';
     form.tipo_emocion.value = '';
+    
+    // Scroll suave hacia el resultado
     resBox.scrollIntoView({ behavior: 'smooth' });
   } catch (err) {
-    msg.textContent = '❌ Error: Revisá los permisos o tu conexión.';
+    msg.textContent = 'Error: Revisa los permisos o tu conexión a internet.';
     msg.className = 'err';
   } finally {
     btn.disabled = false; 
-    btn.textContent = 'Analizar mi pensamiento';
+    btn.innerHTML = 'Analizar mi pensamiento';
   }
 });
