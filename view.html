@@ -3,34 +3,40 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Mi Historial</title>
+  <title>Mi Historial - RELAXTENSION</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+  <header class="brand-header">
+    <img src="logo.png" alt="RELAXTENSION" class="brand-logo">
+    <p class="slogan">Donde la calma se vuelve hábito</p>
+  </header>
+
   <main class="card">
+    
     <!-- BARRA DE USUARIO -->
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; font-size: 14px;">
-      <span style="color: var(--text-light);">Historial de <strong id="user-display"></strong></span>
-      <a href="#" id="btn-logout" style="color: #e53e3e; text-decoration: none; font-weight: 500;">Cerrar Sesión</a>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px; font-size: 14px;">
+      <span style="color: var(--text-muted); font-family: var(--font-display);">Historial de <strong id="user-display" style="color: var(--brand-teal);"></strong></span>
+      <a href="#" id="btn-logout" style="color: var(--brand-peach); text-decoration: none; font-weight: 600; transition: color 0.2s; font-family: var(--font-display);">Cerrar Sesión</a>
     </div>
 
-    <header style="margin-top: 0;">
+    <header class="app-title">
       <h1>Tu recorrido</h1>
-      <p class="sub">Estos son los pensamientos que trabajaste.</p>
+      <p class="sub">Tus momentos de calma registrados.</p>
     </header>
     
-    <p id="status" role="status" style="text-align: center;">Cargando tus registros...</p>
+    <p id="status" role="status" style="text-align: center; margin: 20px 0; color: var(--brand-purple); font-weight: 600;">Cargando tus registros...</p>
     <div id="lista"></div>
 
     <div style="text-align: center; margin-top: 30px;">
-      <a href="index.html" class="link">← Registrar un pensamiento nuevo</a>
+      <a href="index.html" class="link">Volver al registro</a>
     </div>
   </main>
 
   <script>
     const ENDPOINT = 'https://script.google.com/macros/s/AKfycbxSo3hR_EQIs0mpDUMlWOPjDm4mAmu00UObuuoGLY2QQJjE1QmpqjPL9u0jahRxS8Z3/exec';
     
-    // ═══════════ SEGURIDAD (LOGIN) ═══════════
     const isLoggedIn = localStorage.getItem('is_logged_in');
     const currentUser = localStorage.getItem('last_code');
 
@@ -46,18 +52,15 @@
       localStorage.removeItem('last_code');
       window.location.href = 'login.html';
     });
-    // ═════════════════════════════════════════
 
     const $ = s => document.querySelector(s);
 
-    // Cargar automáticamente al abrir la página
     window.addEventListener('DOMContentLoaded', () => {
       buscarHistorial(currentUser);
     });
 
     async function buscarHistorial(codigo) {
-      $('#status').textContent = 'Cargando...';
-      $('#status').className = '';
+      $('#status').textContent = 'Buscando...';
       $('#lista').innerHTML = '';
 
       try {
@@ -67,31 +70,32 @@
         if (!d.ok) throw new Error(d.error || 'Error');
         
         if (!d.rows || d.rows.length === 0) {
-          $('#status').textContent = 'Todavía no tenés registros guardados.';
+          $('#status').textContent = 'Aún no tienes registros. ¡Comienza hoy!';
           return;
         }
         
-        $('#status').textContent = `Tenés ${d.rows.length} registro(s).`;
+        $('#status').textContent = `Tienes ${d.rows.length} registro(s).`;
+        $('#status').style.color = 'var(--brand-teal)';
         $('#lista').innerHTML = d.rows.reverse().map(render).join('');
       } catch (err) {
-        $('#status').textContent = '❌ Error al buscar los registros.';
-        $('#status').className = 'err';
+        $('#status').textContent = 'Error al buscar los registros.';
+        $('#status').style.color = 'var(--brand-peach)';
       }
     }
 
     function render(r) {
       const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-      const fecha = r.Fecha ? new Date(r.Fecha).toLocaleString('es') : '';
+      const fecha = r.Fecha ? new Date(r.Fecha).toLocaleString('es-419') : '';
       return `
         <article class="entry">
           <header>
             <span>${esc(fecha)}</span>
-            <span>Emoción: ${esc(r.EmocionInicial || '?')} → ${esc(r.EmocionFinal || '?')}</span>
+            <span style="color: var(--brand-purple); font-weight: 700;">Emoción: ${esc(r.EmocionInicial || '?')} a ${esc(r.EmocionFinal || '?')}</span>
           </header>
           <p><strong>Situación:</strong> ${esc(r.Situacion)}</p>
           <p><strong>Pensamiento:</strong> ${esc(r.Pensamiento)}</p>
-          ${r.Distorsiones ? `<p class="tag">🔍 ${esc(r.Distorsiones)}</p>` : ''}
-          ${r.Analisis ? `<p class="analisis" style="background:#fff; padding:10px; border-radius:6px; margin-top:10px;">${esc(r.Analisis)}</p>` : ''}
+          ${r.Distorsiones ? `<p class="tag">Distorsiones: ${esc(r.Distorsiones)}</p>` : ''}
+          ${r.Analisis ? `<p class="analisis" style="background:#FAFCFC; padding:15px; border-radius:8px; margin-top:12px; border:1px solid var(--border);">${esc(r.Analisis)}</p>` : ''}
         </article>`;
     }
   </script>
