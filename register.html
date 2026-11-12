@@ -3,14 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Crear Cuenta - Mi Espacio de Calma</title>
+  <title>Crear Cuenta - RELAXTENSION</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+  <header class="brand-header">
+    <img src="logo.png" alt="RELAXTENSION" class="brand-logo">
+    <p class="slogan">Donde la calma se vuelve hábito</p>
+  </header>
+
   <main class="card">
-    <header>
-      <h1>Crear una cuenta</h1>
-      <p class="sub">Regístrate para empezar a usar tu espacio de calma.</p>
+    <header class="app-title">
+      <h1>Crea tu cuenta</h1>
+      <p class="sub">Comienza hoy tu camino hacia la calma.</p>
     </header>
 
     <form id="register-form" autocomplete="off">
@@ -35,7 +41,7 @@
       <p id="status" role="status"></p>
     </form>
 
-    <div style="text-align: center; margin-top: 25px; font-size: 14px;">
+    <div style="text-align: center; margin-top: 25px; font-size: 14px; font-family: var(--font-body);">
       ¿Ya tienes cuenta? <a href="login.html" class="link" style="margin-top:0;">Inicia sesión aquí</a>
     </div>
   </main>
@@ -51,12 +57,11 @@
     const passError = document.getElementById('pass-error');
     const matchError = document.getElementById('match-error');
 
-    // Validación en vivo
     passInput.addEventListener('input', () => {
       const regex = /^(?=.*\d)(?=.*\.).{8,}$/;
       if (passInput.value.length > 0 && !regex.test(passInput.value)) {
         passError.style.display = 'block';
-        passInput.style.borderColor = 'var(--error)';
+        passInput.style.borderColor = 'var(--brand-peach)';
       } else {
         passError.style.display = 'none';
         passInput.style.borderColor = 'var(--border)';
@@ -66,7 +71,7 @@
     passConfirm.addEventListener('input', () => {
       if (passConfirm.value.length > 0 && passInput.value !== passConfirm.value) {
         matchError.style.display = 'block';
-        passConfirm.style.borderColor = 'var(--error)';
+        passConfirm.style.borderColor = 'var(--brand-peach)';
       } else {
         matchError.style.display = 'none';
         passConfirm.style.borderColor = 'var(--border)';
