@@ -3,14 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Iniciar Sesión - Mi Espacio de Calma</title>
+  <title>Iniciar Sesión - RELAXTENSION</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+  <header class="brand-header">
+    <img src="logo.png" alt="RELAXTENSION" class="brand-logo">
+    <p class="slogan">Donde la calma se vuelve hábito</p>
+  </header>
+
   <main class="card">
-    <header>
+    <header class="app-title">
       <h1>Bienvenido de nuevo</h1>
-      <p class="sub">Ingresa a tu espacio para registrar tus pensamientos.</p>
+      <p class="sub">Ingresa a tu espacio para continuar con tu hábito.</p>
     </header>
 
     <form id="login-form" autocomplete="off">
@@ -28,7 +34,7 @@
       <p id="status" role="status"></p>
     </form>
 
-    <div style="text-align: center; margin-top: 25px; font-size: 14px;">
+    <div style="text-align: center; margin-top: 25px; font-size: 14px; font-family: var(--font-body);">
       ¿No tienes cuenta? <a href="register.html" class="link" style="margin-top:0;">Regístrate aquí</a>
     </div>
   </main>
@@ -39,13 +45,11 @@
     const btn = document.getElementById('btn-login');
     const status = document.getElementById('status');
 
-    // Autocompletar el usuario si viene del registro
     const lastUser = localStorage.getItem('last_code');
     if (lastUser) document.getElementById('username').value = lastUser;
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner"></span> Ingresando...';
       status.textContent = '';
@@ -67,7 +71,6 @@
         status.textContent = 'Bienvenido. Redirigiendo...';
         status.className = 'ok';
         
-        // Guardar sesión
         localStorage.setItem('last_code', data.username);
         localStorage.setItem('is_logged_in', 'true');
         
