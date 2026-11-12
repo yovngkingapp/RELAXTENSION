@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Iniciar Sesión - Mi Espacio de Calma</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .login-link { text-align: center; margin-top: 20px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <header>
+      <h1>Bienvenido de nuevo</h1>
+      <p class="sub">Ingresá a tu espacio para registrar tus pensamientos.</p>
+    </header>
+
+    <form id="login-form" autocomplete="off">
+      <div class="input-group">
+        <label>Nombre de usuario</label>
+        <input type="text" id="username" required placeholder="Tu usuario">
+      </div>
+
+      <div class="input-group">
+        <label>Contraseña</label>
+        <input type="password" id="password" required placeholder="Tu contraseña">
+      </div>
+
+      <button type="submit" id="btn-login">Ingresar</button>
+      <p id="status" role="status"></p>
+    </form>
+
+    <div class="login-link">
+      ¿No tenés cuenta? <a href="register.html" class="link">Registrate acá</a>
+    </div>
+  </main>
+
+  <script>
+    const ENDPOINT = 'https://script.google.com/macros/s/AKfycbxSo3hR_EQIs0mpDUMlWOPjDm4mAmu00UObuuoGLY2QQJjE1QmpqjPL9u0jahRxS8Z3/exec';
+    const form = document.getElementById('login-form');
+    const btn = document.getElementById('btn-login');
+    const status = document.getElementById('status');
+
+    // Autocompletar el usuario si viene del registro
+    const lastUser = localStorage.getItem('last_code');
+    if (lastUser) document.getElementById('username').value = lastUser;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      btn.disabled = true;
+      btn.textContent = 'Ingresando...';
+      status.textContent = '';
+      
+      try {
+        const res = await fetch(ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action: 'login',
+            username: document.getElementById('username').value.trim(),
+            password: document.getElementById('password').value
+          })
+        });
+        
+        const data = await res.json();
+        
+        if (!data.ok) throw new Error(data.error);
+        
+        // Éxito
+        status.textContent = '✅ Bienvenido. Redirigiendo...';
+        status.className = 'ok';
+        status.style.color = 'var(--accent)';
+        
+        // Guardamos el usuario como "sesión" en el navegador
+        localStorage.setItem('last_code', data.username);
+        localStorage.setItem('is_logged_in', 'true'); // Bandera simple para la beta
+        
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 1000);
+
+      } catch (err) {
+        status.textContent = '❌ ' + err.message;
+        status.className = 'err';
+        btn.disabled = false;
+        btn.textContent = 'Ingresar';
+      }
+    });
+  </script>
+</body>
+</html>
