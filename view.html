@@ -8,17 +8,18 @@
 </head>
 <body>
   <main class="card">
-    <header>
-      <h1>Tu recorrido</h1>
-      <p class="sub">Ingresá tu código para ver los pensamientos que trabajaste.</p>
-    </header>
+    <!-- BARRA DE USUARIO -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; font-size: 14px;">
+      <span style="color: var(--text-light);">Historial de <strong id="user-display"></strong></span>
+      <a href="#" id="btn-logout" style="color: #e53e3e; text-decoration: none; font-weight: 500;">Cerrar Sesión</a>
+    </div>
 
-    <form id="lookup" class="bar">
-      <input id="codigo" type="text" required maxlength="20" placeholder="Tu código (Ej: TEST-123)" style="text-transform:uppercase">
-      <button type="submit">Buscar</button>
-    </form>
+    <header style="margin-top: 0;">
+      <h1>Tu recorrido</h1>
+      <p class="sub">Estos son los pensamientos que trabajaste.</p>
+    </header>
     
-    <p id="status" role="status"></p>
+    <p id="status" role="status" style="text-align: center;">Cargando tus registros...</p>
     <div id="lista"></div>
 
     <div style="text-align: center; margin-top: 30px;">
@@ -28,18 +29,34 @@
 
   <script>
     const ENDPOINT = 'https://script.google.com/macros/s/AKfycbxSo3hR_EQIs0mpDUMlWOPjDm4mAmu00UObuuoGLY2QQJjE1QmpqjPL9u0jahRxS8Z3/exec';
-    const $ = s => document.querySelector(s);
     
-    const last = localStorage.getItem('last_code');
-    if (last) $('#codigo').value = last;
+    // ═══════════ SEGURIDAD (LOGIN) ═══════════
+    const isLoggedIn = localStorage.getItem('is_logged_in');
+    const currentUser = localStorage.getItem('last_code');
 
-    $('#lookup').addEventListener('submit', async (e) => {
+    if (isLoggedIn !== 'true' || !currentUser) {
+      window.location.href = 'login.html';
+    }
+
+    document.getElementById('user-display').textContent = currentUser;
+
+    document.getElementById('btn-logout').addEventListener('click', (e) => {
       e.preventDefault();
-      const codigo = $('#codigo').value.trim().toUpperCase();
-      if (!codigo) return;
-      localStorage.setItem('last_code', codigo);
+      localStorage.removeItem('is_logged_in');
+      localStorage.removeItem('last_code');
+      window.location.href = 'login.html';
+    });
+    // ═════════════════════════════════════════
 
-      $('#status').textContent = 'Buscando...';
+    const $ = s => document.querySelector(s);
+
+    // Cargar automáticamente al abrir la página
+    window.addEventListener('DOMContentLoaded', () => {
+      buscarHistorial(currentUser);
+    });
+
+    async function buscarHistorial(codigo) {
+      $('#status').textContent = 'Cargando...';
       $('#status').className = '';
       $('#lista').innerHTML = '';
 
@@ -50,17 +67,17 @@
         if (!d.ok) throw new Error(d.error || 'Error');
         
         if (!d.rows || d.rows.length === 0) {
-          $('#status').textContent = 'No hay registros para este código.';
+          $('#status').textContent = 'Todavía no tenés registros guardados.';
           return;
         }
         
-        $('#status').textContent = d.rows.length + ' registro(s) encontrado(s).';
+        $('#status').textContent = `Tenés ${d.rows.length} registro(s).`;
         $('#lista').innerHTML = d.rows.reverse().map(render).join('');
       } catch (err) {
-        $('#status').textContent = '❌ Error al buscar. Revisá los permisos.';
+        $('#status').textContent = '❌ Error al buscar los registros.';
         $('#status').className = 'err';
       }
-    });
+    }
 
     function render(r) {
       const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
