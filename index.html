@@ -3,25 +3,33 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Mi Espacio de Calma</title>
+  <title>RELAXTENSION - Tu espacio de calma</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+  <!-- ENCABEZADO DE MARCA -->
+  <header class="brand-header">
+    <img src="logo.png" alt="RELAXTENSION" class="brand-logo">
+    <p class="slogan">Donde la calma se vuelve hábito</p>
+  </header>
+
+  <!-- TARJETA DE LA APP -->
   <main class="card">
+    
     <!-- BARRA DE USUARIO -->
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px; font-size: 14px;">
-      <span style="color: var(--text-light);">Hola, <strong id="user-display"></strong></span>
-      <a href="#" id="btn-logout" style="color: var(--error); text-decoration: none; font-weight: 600; transition: color 0.2s;">Cerrar Sesión</a>
+      <span style="color: var(--text-muted); font-family: var(--font-display);">Hola, <strong id="user-display" style="color: var(--brand-teal);"></strong></span>
+      <a href="#" id="btn-logout" style="color: var(--brand-peach); text-decoration: none; font-weight: 600; transition: color 0.2s; font-family: var(--font-display);">Cerrar Sesión</a>
     </div>
 
-    <header style="margin-top: 0;">
-      <h1>Un momento para ti</h1>
-      <p class="sub">Registra lo que sientes. La IA te ayudará a mirarlo desde otra perspectiva.</p>
+    <header class="app-title">
+      <h1>Tu registro de hoy</h1>
+      <p class="sub">Escribe lo que sientes. La IA te ayudará a mirarlo con claridad.</p>
     </header>
 
     <form id="form" autocomplete="off">
       <input type="text" name="_hp" tabindex="-1" autocomplete="off" style="display:none" aria-hidden="true">
-      <!-- El código ahora es oculto, se toma del login -->
       <input type="hidden" name="codigo" id="codigo-user" value="">
 
       <div class="input-group">
@@ -86,6 +94,7 @@
       <a href="view.html" class="link">Ver mis registros anteriores</a>
     </div>
   </main>
+
   <script src="app.js"></script>
 </body>
 </html>
