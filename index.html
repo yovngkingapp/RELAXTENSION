@@ -9,20 +9,19 @@
 <body>
   <main class="card">
     <!-- BARRA DE USUARIO -->
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; font-size: 14px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px; font-size: 14px;">
       <span style="color: var(--text-light);">Hola, <strong id="user-display"></strong></span>
-      <a href="#" id="btn-logout" style="color: #e53e3e; text-decoration: none; font-weight: 500;">Cerrar Sesión</a>
+      <a href="#" id="btn-logout" style="color: var(--error); text-decoration: none; font-weight: 600; transition: color 0.2s;">Cerrar Sesión</a>
     </div>
 
     <header style="margin-top: 0;">
-      <h1>Un momento para vos</h1>
-      <p class="sub">Registrá lo que sentís. La IA te va a ayudar a mirarlo desde otra perspectiva.</p>
+      <h1>Un momento para ti</h1>
+      <p class="sub">Registra lo que sientes. La IA te ayudará a mirarlo desde otra perspectiva.</p>
     </header>
 
     <form id="form" autocomplete="off">
       <input type="text" name="_hp" tabindex="-1" autocomplete="off" style="display:none" aria-hidden="true">
-      
-      <!-- EL INPUT DEL CÓDIGO YA NO ES VISIBLE, SE MANEJA POR JS -->
+      <!-- El código ahora es oculto, se toma del login -->
       <input type="hidden" name="codigo" id="codigo-user" value="">
 
       <div class="input-group">
@@ -32,7 +31,7 @@
 
       <div class="input-group">
         <label>¿Qué pasó por tu cabeza? (Pensamiento automático)</label>
-        <textarea name="pensamiento" rows="2" maxlength="500" required placeholder="¿Qué te dijiste a vos mismo?"></textarea>
+        <textarea name="pensamiento" rows="2" maxlength="500" required placeholder="¿Qué te dijiste a ti mismo?"></textarea>
       </div>
 
       <div class="input-group emotion-group">
@@ -67,7 +66,7 @@
       </div>
 
       <div class="input-group emotion-group">
-        <label>¿Cómo te sentís ahora?</label>
+        <label>¿Cómo te sientes ahora?</label>
         <div class="slider-container">
           <span>Calma</span>
           <input type="range" id="emo-final" name="emocion_final" min="0" max="100" value="50">
@@ -76,7 +75,7 @@
         <div class="slider-value" id="val-final">50</div>
       </div>
 
-      <button type="submit">Analizar mi pensamiento</button>
+      <button type="submit" id="btn-submit">Analizar mi pensamiento</button>
       <p id="status" role="status"></p>
     </form>
 
@@ -84,7 +83,7 @@
       <h2>Una nueva perspectiva</h2>
       <div id="r-distorsiones" class="tag"></div>
       <p id="r-analisis" class="analisis"></p>
-      <a href="view.html" class="link">Ver mis registros anteriores →</a>
+      <a href="view.html" class="link">Ver mis registros anteriores</a>
     </div>
   </main>
   <script src="app.js"></script>
