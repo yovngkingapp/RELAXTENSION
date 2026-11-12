@@ -5,23 +5,18 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Crear Cuenta - Mi Espacio de Calma</title>
   <link rel="stylesheet" href="style.css">
-  <style>
-    /* Un estilito extra para la pantalla de registro */
-    .login-link { text-align: center; margin-top: 20px; font-size: 14px; }
-    .error-text { color: #e53e3e; font-size: 12px; margin-top: 4px; display: none; }
-  </style>
 </head>
 <body>
   <main class="card">
     <header>
       <h1>Crear una cuenta</h1>
-      <p class="sub">Registrate para empezar a usar tu espacio de calma.</p>
+      <p class="sub">Regístrate para empezar a usar tu espacio de calma.</p>
     </header>
 
     <form id="register-form" autocomplete="off">
       <div class="input-group">
         <label>Nombre de usuario</label>
-        <input type="text" id="username" required minlength="3" maxlength="20" placeholder="Ej: anahis23">
+        <input type="text" id="username" required minlength="3" maxlength="20" placeholder="Elige un usuario">
       </div>
 
       <div class="input-group">
@@ -32,7 +27,7 @@
 
       <div class="input-group">
         <label>Repetir contraseña</label>
-        <input type="password" id="password-confirm" required placeholder="Repetí tu contraseña">
+        <input type="password" id="password-confirm" required placeholder="Repite tu contraseña">
         <p class="error-text" id="match-error">Las contraseñas no coinciden.</p>
       </div>
 
@@ -40,8 +35,8 @@
       <p id="status" role="status"></p>
     </form>
 
-    <div class="login-link">
-      ¿Ya tenés cuenta? <a href="login.html" class="link">Iniciá sesión acá</a>
+    <div style="text-align: center; margin-top: 25px; font-size: 14px;">
+      ¿Ya tienes cuenta? <a href="login.html" class="link" style="margin-top:0;">Inicia sesión aquí</a>
     </div>
   </main>
 
@@ -51,29 +46,27 @@
     const btn = document.getElementById('btn-register');
     const status = document.getElementById('status');
     
-    // Elementos de error
     const passInput = document.getElementById('password');
     const passConfirm = document.getElementById('password-confirm');
     const passError = document.getElementById('pass-error');
     const matchError = document.getElementById('match-error');
 
-    // Validación en vivo de la contraseña (Regex)
+    // Validación en vivo
     passInput.addEventListener('input', () => {
       const regex = /^(?=.*\d)(?=.*\.).{8,}$/;
       if (passInput.value.length > 0 && !regex.test(passInput.value)) {
         passError.style.display = 'block';
-        passInput.style.borderColor = '#e53e3e';
+        passInput.style.borderColor = 'var(--error)';
       } else {
         passError.style.display = 'none';
         passInput.style.borderColor = 'var(--border)';
       }
     });
 
-    // Validación de que coincidan
     passConfirm.addEventListener('input', () => {
       if (passConfirm.value.length > 0 && passInput.value !== passConfirm.value) {
         matchError.style.display = 'block';
-        passConfirm.style.borderColor = '#e53e3e';
+        passConfirm.style.borderColor = 'var(--error)';
       } else {
         matchError.style.display = 'none';
         passConfirm.style.borderColor = 'var(--border)';
@@ -83,21 +76,20 @@
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       
-      // Chequeos finales antes de enviar
       const regex = /^(?=.*\d)(?=.*\.).{8,}$/;
       if (!regex.test(passInput.value)) {
-        status.textContent = '❌ La contraseña no cumple los requisitos.';
+        status.textContent = 'La contraseña no cumple los requisitos.';
         status.className = 'err';
         return;
       }
       if (passInput.value !== passConfirm.value) {
-        status.textContent = '❌ Las contraseñas no coinciden.';
+        status.textContent = 'Las contraseñas no coinciden.';
         status.className = 'err';
         return;
       }
 
       btn.disabled = true;
-      btn.textContent = 'Creando cuenta...';
+      btn.innerHTML = '<span class="spinner"></span> Creando cuenta...';
       status.textContent = '';
       
       try {
@@ -112,26 +104,19 @@
         });
         
         const data = await res.json();
-        
         if (!data.ok) throw new Error(data.error);
         
-        // Éxito
-        status.textContent = '✅ ¡Cuenta creada! Redirigiendo...';
+        status.textContent = 'Cuenta creada. Redirigiendo...';
         status.className = 'ok';
-        status.style.color = 'var(--accent)';
         
-        // Guardamos el nombre para que no lo tenga que escribir en el login
         localStorage.setItem('last_code', document.getElementById('username').value.trim().toLowerCase());
-        
-        setTimeout(() => {
-          window.location.href = 'login.html';
-        }, 1500);
+        setTimeout(() => { window.location.href = 'login.html'; }, 1500);
 
       } catch (err) {
-        status.textContent = '❌ ' + err.message;
+        status.textContent = err.message;
         status.className = 'err';
         btn.disabled = false;
-        btn.textContent = 'Crear cuenta';
+        btn.innerHTML = 'Crear cuenta';
       }
     });
   </script>
