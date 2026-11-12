@@ -1,5 +1,27 @@
 const ENDPOINT = 'https://script.google.com/macros/s/AKfycbxSo3hR_EQIs0mpDUMlWOPjDm4mAmu00UObuuoGLY2QQJjE1QmpqjPL9u0jahRxS8Z3/exec';
 
+// ═══════════ SEGURIDAD (LOGIN) ═══════════
+const isLoggedIn = localStorage.getItem('is_logged_in');
+const currentUser = localStorage.getItem('last_code');
+
+if (isLoggedIn !== 'true' || !currentUser) {
+  // Si no hay sesión, a la calle
+  window.location.href = 'login.html';
+}
+
+// Configurar la interfaz con el usuario
+document.getElementById('user-display').textContent = currentUser;
+document.getElementById('codigo-user').value = currentUser;
+
+// Botón de cerrar sesión
+document.getElementById('btn-logout').addEventListener('click', (e) => {
+  e.preventDefault();
+  localStorage.removeItem('is_logged_in');
+  localStorage.removeItem('last_code');
+  window.location.href = 'login.html';
+});
+// ═════════════════════════════════════════
+
 const form = document.querySelector('#form');
 const btn = form.querySelector('button[type=submit]');
 const msg = document.querySelector('#status');
@@ -14,9 +36,6 @@ const sliderFinal = document.getElementById('emo-final');
 const valFinal = document.getElementById('val-final');
 sliderFinal.addEventListener('input', () => valFinal.textContent = sliderFinal.value);
 
-const lastCode = localStorage.getItem('last_code');
-if (lastCode) form.codigo.value = lastCode;
-
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   btn.disabled = true; 
@@ -27,7 +46,7 @@ form.addEventListener('submit', async (e) => {
 
   const payload = {
     _hp: form._hp?.value || '',
-    codigo: form.codigo.value.trim().toUpperCase(),
+    codigo: currentUser, // Usamos el usuario logueado
     situacion: form.situacion.value.trim(),
     pensamiento: form.pensamiento.value.trim(),
     emocion_inicial: sliderInit.value,
@@ -48,8 +67,6 @@ form.addEventListener('submit', async (e) => {
     const data = await res.json();
     
     if (!data.ok) throw new Error(data.error || 'Error en el servidor');
-
-    localStorage.setItem('last_code', payload.codigo);
 
     document.querySelector('#r-distorsiones').textContent = data.distorsiones ? '🔍 ' + data.distorsiones : '';
     document.querySelector('#r-analisis').textContent = data.analisis || '';
