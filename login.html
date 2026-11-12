@@ -5,15 +5,12 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Iniciar Sesión - Mi Espacio de Calma</title>
   <link rel="stylesheet" href="style.css">
-  <style>
-    .login-link { text-align: center; margin-top: 20px; font-size: 14px; }
-  </style>
 </head>
 <body>
   <main class="card">
     <header>
       <h1>Bienvenido de nuevo</h1>
-      <p class="sub">Ingresá a tu espacio para registrar tus pensamientos.</p>
+      <p class="sub">Ingresa a tu espacio para registrar tus pensamientos.</p>
     </header>
 
     <form id="login-form" autocomplete="off">
@@ -31,8 +28,8 @@
       <p id="status" role="status"></p>
     </form>
 
-    <div class="login-link">
-      ¿No tenés cuenta? <a href="register.html" class="link">Registrate acá</a>
+    <div style="text-align: center; margin-top: 25px; font-size: 14px;">
+      ¿No tienes cuenta? <a href="register.html" class="link" style="margin-top:0;">Regístrate aquí</a>
     </div>
   </main>
 
@@ -50,7 +47,7 @@
       e.preventDefault();
       
       btn.disabled = true;
-      btn.textContent = 'Ingresando...';
+      btn.innerHTML = '<span class="spinner"></span> Ingresando...';
       status.textContent = '';
       
       try {
@@ -65,27 +62,22 @@
         });
         
         const data = await res.json();
-        
         if (!data.ok) throw new Error(data.error);
         
-        // Éxito
-        status.textContent = '✅ Bienvenido. Redirigiendo...';
+        status.textContent = 'Bienvenido. Redirigiendo...';
         status.className = 'ok';
-        status.style.color = 'var(--accent)';
         
-        // Guardamos el usuario como "sesión" en el navegador
+        // Guardar sesión
         localStorage.setItem('last_code', data.username);
-        localStorage.setItem('is_logged_in', 'true'); // Bandera simple para la beta
+        localStorage.setItem('is_logged_in', 'true');
         
-        setTimeout(() => {
-          window.location.href = 'index.html';
-        }, 1000);
+        setTimeout(() => { window.location.href = 'index.html'; }, 1000);
 
       } catch (err) {
-        status.textContent = '❌ ' + err.message;
+        status.textContent = err.message;
         status.className = 'err';
         btn.disabled = false;
-        btn.textContent = 'Ingresar';
+        btn.innerHTML = 'Ingresar';
       }
     });
   </script>
