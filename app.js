@@ -82,7 +82,7 @@ form.addEventListener('submit', async (e) => {
     // Scroll suave hacia el resultado
     resBox.scrollIntoView({ behavior: 'smooth' });
   } catch (err) {
-    msg.textContent = 'Error: Revisa los permisos o tu conexión a internet.';
+    msg.textContent = 'Error: ' + (err.message || 'Revisa tu conexión a internet.');
     msg.className = 'err';
   } finally {
     btn.disabled = false; 
